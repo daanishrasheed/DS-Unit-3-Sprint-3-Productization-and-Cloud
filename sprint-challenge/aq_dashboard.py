@@ -27,7 +27,7 @@ class Record(DB.Model):
     value = DB.Column(DB.Float, nullable=False)
 
     def __repr__(self):
-        return return '<datetime: {} --- value: {}>'.format(self.datetime, self.value)
+        return '<datetime: {} --- value: {}>'.format(self.datetime, self.value)
 
 
 @APP.route('/refresh')
