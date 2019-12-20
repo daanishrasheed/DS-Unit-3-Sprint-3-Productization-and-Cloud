@@ -1,5 +1,5 @@
 """OpenAQ Air Quality Dashboard with Flask."""
-from flask import Flask
+from flask import Flask, render_template
 from openaq import OpenAQ
 from flask_sqlalchemy import SQLAlchemy
 
@@ -27,17 +27,22 @@ class Record(DB.Model):
     value = DB.Column(DB.Float, nullable=False)
 
     def __repr__(self):
-        return '<datetime: {} --- value: {}>'.format(self.datetime, self.value)
-
+        return '<datetime {}, value {}>'.format(self.datetime, self.value) 
 
 @APP.route('/refresh')
 def refresh():
     """Pull fresh data from Open AQ and replace existing data."""
     DB.drop_all()
     DB.create_all()
-    d = root()
-    for res in d:
-        record = Record(datetime = res[0], value=res[1])
-        DB.session.add(record)
+    for data in result:
+        datetime = data['date']['utc']
+        value = data['value']
+        final_record = Record(datetime=datetime, value=value)
+        DB.session.add(final_record)
     DB.session.commit()
     return 'Data refreshed!'
+
+@APP.route('/fourth')
+def fourthpart():
+    s = Record.query.filter(Record.value == 10.0 or Record.value > 10.0).all()
+    return str(s)
